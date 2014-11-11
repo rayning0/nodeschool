@@ -3,9 +3,23 @@ var trumpet = require('trumpet');
 
 var tr = trumpet();
 
-var loud = tr.select('.loud').createStream();
-loud.pipe(through(function (buf) {
-    this.queue(buf.toString().toUpperCase());
-})).pipe(loud);
+var loudStream = tr.select('.loud').createStream();
 
-process.stdin.pipe(tr).pipe(process.stdout);
+loudStream.pipe(through(function (buf) {
+	this.queue(buf.toString().toUpperCase())
+})).pipe(loudStream)
+
+process.stdin.pipe(tr).pipe(process.stdout)
+
+// Another version written with .selectAll()
+
+// tr.selectAll('.loud', function(loudElement) {
+// 	var loudStream = loudElement.createStream()
+
+// 	loudStream.pipe(through(function(buf) {
+// 		this.queue(buf.toString().toUpperCase())
+// 	})).pipe(loudStream)
+
+// })
+
+// process.stdin.pipe(tr).pipe(process.stdout)
